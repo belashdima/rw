@@ -5,6 +5,8 @@ package com.belashdima.rememberwords.model;
  */
 public abstract class AbstractLearnableItem {
     protected int id;
+    protected int listId;
+
 
     public int getId() {
         return id;
@@ -17,4 +19,12 @@ public abstract class AbstractLearnableItem {
     public abstract String getMainInscription();
 
     public abstract String getAuxiliaryInscription();
+
+    public int getListId() {
+        return listId;
+    }
+
+    public void setListId(int listId) {
+        this.listId = listId;
+    }
 }

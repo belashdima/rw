@@ -1,22 +1,25 @@
 package com.belashdima.rememberwords.services;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.belashdima.rememberwords.DatabaseOpenHelper;
-import com.belashdima.rememberwords.model.AbstractLearnableItem;
+import com.belashdima.rememberwords.R;
+import com.belashdima.rememberwords.activities.RepeatWordsActivity;
 import com.belashdima.rememberwords.model.WordTranslation;
 import com.belashdima.rememberwords.receivers.WordRepeatWakefulReceiver;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class WordRepeatIntentService extends IntentService {
     public WordRepeatIntentService() {
@@ -32,46 +35,49 @@ public class WordRepeatIntentService extends IntentService {
             Log.i("Vi", "VI");
             Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
             //v.vibrate(100);
-            ArrayList<AbstractLearnableItem> notifyList = getNotifyList();
+            DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(this);
+            ArrayList<WordTranslation> notifiedWordsArrayList = databaseOpenHelper.getNotifiedWordsArrayList();
+            databaseOpenHelper.close();
+            Log.i("WORDS", notifiedWordsArrayList.toString());
+            createNotification(notifiedWordsArrayList);
 
             // Release the wake lock provided by the WakefulBroadcastReceiver.
             WordRepeatWakefulReceiver.completeWakefulIntent(intent);
         }
     }
 
-    private ArrayList<AbstractLearnableItem> getNotifyList() {
-        Log.i("Vi", "getList");
-        ArrayList<AbstractLearnableItem> retList= new ArrayList<AbstractLearnableItem>();
+    private void createNotification(ArrayList<WordTranslation> notifiedWordsArrayList) {
 
-        String thisMoment=new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
+        Intent intent = new Intent(this, RepeatWordsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // Because clicking the notification opens a new ("special") activity, there's
+        // no need to create an artificial back stack.
+        
+        intent.putParcelableArrayListExtra("NOTIFIED_WORDS", notifiedWordsArrayList);
+        PendingIntent resultPendingIntent;
+        resultPendingIntent = PendingIntent.getActivities(
+                this,
+                1,
+                new Intent[] {intent},
+                PendingIntent.FLAG_UPDATE_CURRENT //PendingIntent.FLAG_CANCEL_CURRENT|PendingIntent.FLAG_ONE_SHOT
+        );
 
-        DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(this);
-        SQLiteDatabase database = databaseOpenHelper.getReadableDatabase();
 
-        //Cursor cursor = database.rawQuery("SELECT id, word, translation, notify_next_num, notify_next_time, custom_order_id FROM "+DatabaseOpenHelper.wordsTableName+" WHERE notify_next_time=", null);
-        Cursor cursor = database.query(DatabaseOpenHelper.WORDS_TABLE_NAME, DatabaseOpenHelper.allColumns, DatabaseOpenHelper.allColumns[4]+"<?", new String[]{thisMoment}/*new String[]{DatabaseOpenHelper.allColumns[4]}*/, null, null, null);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        mBuilder.setAutoCancel(true);
+        mBuilder.setContentIntent(resultPendingIntent);
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                R.mipmap.logo));
+        mBuilder.setSmallIcon(R.mipmap.logo);
+        mBuilder.setContentTitle(getString(R.string.time_to_repeat_words_title));
+        mBuilder.setContentText(getString(R.string.time_to_repeat_words_title));
+        mBuilder.setLights(Color.BLUE, 1000, 500);
+        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.time_to_repeat_words_title)));
+        mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+        //mBuilder.setVibrate(new long[] { 500, 1000 });
 
-        Log.i("Vi", cursor.getCount()+"");
-        if (cursor.moveToFirst())
-        {
-            int id = cursor.getInt(0);
-            String word = cursor.getString(1);
-            String translation = cursor.getString(2);
-            int notifyNextNum = cursor.getInt(3);
-            String notifyNextTime = cursor.getString(4);
-            int customOrder = cursor.getInt(5);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            do
-            {
-                Log.i("HHJ", id+" "+word+" "+translation+" "+notifyNextNum+" "+notifyNextTime+" "+customOrder);
-                retList.add(new WordTranslation(id, word, translation, notifyNextNum, notifyNextTime, customOrder));
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        database.close();
-        databaseOpenHelper.close();
-
-        return retList;
+        mNotificationManager.notify(1, mBuilder.build());
     }
 }

@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.belashdima.rememberwords.DatabaseOpenHelper;
 import com.belashdima.rememberwords.fragments.LearnNowFragment;
 import com.belashdima.rememberwords.R;
 import com.belashdima.rememberwords.receivers.WordRepeatWakefulReceiver;
@@ -39,13 +40,14 @@ public class StartActivity extends AppCompatActivity implements NavigationView.O
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //deleteDatabase(DatabaseOpenHelper.DATABASE_NAME);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(StartActivity.this, AddNewWordActivity.class);
-                intent.putExtra("id", AddNewWordActivity.NEW_WORD);
+                intent.putExtra("id", DatabaseOpenHelper.ADDING_NEW_WORD_ID);
                 intent.putExtra("mainInscription", "");
                 intent.putExtra("auxiliaryInscription", "");
                 startActivity(intent);
@@ -62,9 +64,9 @@ public class StartActivity extends AppCompatActivity implements NavigationView.O
 
         showDefaultFragment();
 
-        AlarmManager alarmMgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent alarmIntent = new Intent(this, WordRepeatWakefulReceiver.class);
-        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT|PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmMgr = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
                 60000, alarmPendingIntent);
     }
@@ -183,8 +185,8 @@ public class StartActivity extends AppCompatActivity implements NavigationView.O
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(0);
-        Fragment fragment = new WordsListFragment();
 
+        Fragment fragment = new WordsListFragment();
         // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()

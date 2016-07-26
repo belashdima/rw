@@ -18,8 +18,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class AddNewWordActivity extends AppCompatActivity {
-    // -1 in id means that activity is opened to create a new word, not to edit already existent
-    public static final int NEW_WORD=-1;
     private int id;
     private String word;
     private String translation;
@@ -91,40 +89,8 @@ public class AddNewWordActivity extends AppCompatActivity {
 
         } else {
             DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(this);
-
-            ContentValues cv = new ContentValues();
-            cv.put("word", word);
-            cv.put("translation", translation);
-
-            SQLiteDatabase database = databaseOpenHelper.getWritableDatabase();
-
-            if(id==NEW_WORD) {
-                //long rowID = database.insert(DatabaseOpenHelper.WORDS_TABLE_NAME, null, cv);
-                String thisMoment=new SimpleDateFormat("yyyy-MM-dd HH:mm").format(addMinutes(new Date(),10));
-                Log.i("nrjelknv", thisMoment);
-                database.execSQL("INSERT INTO "+DatabaseOpenHelper.WORDS_TABLE_NAME+" ("+
-                        DatabaseOpenHelper.allColumns[1]+","+
-                        DatabaseOpenHelper.allColumns[2]+","+
-                        DatabaseOpenHelper.allColumns[3]+","+
-                        DatabaseOpenHelper.allColumns[4]+
-                        ") VALUES ('"+word+"','"+translation+"','"+1+"','"+thisMoment+"');");
-                //database.execSQL("INSERT INTO "+DatabaseOpenHelper.WORDS_TABLE_NAME+" SET word='"+word+"', translation='"+translation+"' WHERE id='"+id+"';");
-            } else {
-                cv.put("id", id);
-                //long rowID = database.update("words_table", cv, "id="+id, null);
-                database.execSQL("UPDATE "+DatabaseOpenHelper.WORDS_TABLE_NAME+" SET word='"+word+"', translation='"+translation+"' WHERE id='"+id+"';");
-            }
-
-            database.close();
+            databaseOpenHelper.saveWord(id, word, translation);
             databaseOpenHelper.close();
         }
-    }
-
-    public static Date addMinutes(Date date, int minutesNumber)
-    {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.MINUTE, minutesNumber); //minus number would decrement the days
-        return cal.getTime();
     }
 }

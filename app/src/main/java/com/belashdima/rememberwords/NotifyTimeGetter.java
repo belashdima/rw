@@ -47,7 +47,7 @@ public class NotifyTimeGetter
     }
 
     private static double func(double x) {
-        return myExp(x)*10; //Math.exp(x)/0.1;
+        return myExp(x)/*10*/; //Math.exp(x)/0.1;
     }
 
     public static double myExp(double x) {

@@ -1,9 +1,14 @@
 package com.belashdima.rememberwords.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
 /**
  * Created by belashdima on 27.02.16.
  */
-public class WordTranslation extends AbstractLearnableItem
+public class WordTranslation extends AbstractLearnableItem implements Parcelable
 {
     private String word;
     private String translation;
@@ -11,8 +16,9 @@ public class WordTranslation extends AbstractLearnableItem
     private String notifyNextTime;
     private int customOrder;
 
-    public WordTranslation(int id, String word, String translation, int notifyNextNum, String notifyNextTime, int customOrder) {
+    public WordTranslation(int id, int listId, String word, String translation, int notifyNextNum, String notifyNextTime, int customOrder) {
         this.id = id;
+        this.listId = listId;
         this.word = word;
         this.translation = translation;
         this.notifyNextNum = notifyNextNum;
@@ -68,5 +74,41 @@ public class WordTranslation extends AbstractLearnableItem
     @Override
     public String getAuxiliaryInscription() {
         return getTranslation();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(this.id);
+        out.writeInt(this.listId);
+        out.writeString(this.word);
+        out.writeString(this.translation);
+        out.writeInt(this.notifyNextNum);
+        out.writeString(this.notifyNextTime);
+        out.writeInt(this.customOrder);
+    }
+
+    public static final Parcelable.Creator<WordTranslation> CREATOR = new Parcelable.Creator<WordTranslation>() {
+        public WordTranslation createFromParcel(Parcel in) {
+            return new WordTranslation(in);
+        }
+
+        public WordTranslation[] newArray(int size) {
+            return new WordTranslation[size];
+        }
+    };
+
+    private WordTranslation(Parcel in) {
+        this.id = in.readInt();
+        this.listId = in.readInt();
+        this.word = in.readString();
+        this.translation = in.readString();
+        this.notifyNextNum = in.readInt();
+        this.notifyNextTime = in.readString();
+        this.customOrder = in.readInt();
     }
 }
