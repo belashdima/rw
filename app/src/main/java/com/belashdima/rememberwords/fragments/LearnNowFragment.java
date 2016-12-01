@@ -18,8 +18,8 @@ public class LearnNowFragment extends Fragment
         // Required empty public constructor
     }
 
-    public static WordsListFragment newInstance(String param1, String param2) {
-        WordsListFragment fragment = new WordsListFragment();
+    public static ALIListFragment newInstance(String param1, String param2) {
+        ALIListFragment fragment = new ALIListFragment();
         Bundle args = new Bundle();
         //args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);

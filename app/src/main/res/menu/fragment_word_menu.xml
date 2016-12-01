@@ -3,9 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/add_new_word_action_done"
+        android:id="@+id/word_action_done"
         android:title="@string/action_settings"
         android:icon="@drawable/ic_done_white_48dp"
-        app:showAsAction="always"
-        android:onClick="onDoneMenuClicked"/>
+        app:showAsAction="always" />
 </menu>

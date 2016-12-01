@@ -8,8 +8,7 @@ import java.io.Serializable;
 /**
  * Created by belashdima on 27.02.16.
  */
-public class WordTranslation extends AbstractLearnableItem implements Parcelable
-{
+public class WordTranslation extends AbstractLearnableItem {
     private String word;
     private String translation;
     private int notifyNextNum;
@@ -17,8 +16,7 @@ public class WordTranslation extends AbstractLearnableItem implements Parcelable
     private int customOrder;
 
     public WordTranslation(int id, int listId, String word, String translation, int notifyNextNum, String notifyNextTime, int customOrder) {
-        this.id = id;
-        this.listId = listId;
+        super(id, listId);
         this.word = word;
         this.translation = translation;
         this.notifyNextNum = notifyNextNum;
@@ -76,6 +74,8 @@ public class WordTranslation extends AbstractLearnableItem implements Parcelable
         return getTranslation();
     }
 
+
+    // Parcelable implementation
     @Override
     public int describeContents() {
         return 0;
@@ -103,12 +103,12 @@ public class WordTranslation extends AbstractLearnableItem implements Parcelable
     };
 
     private WordTranslation(Parcel in) {
-        this.id = in.readInt();
-        this.listId = in.readInt();
+        super(in);
         this.word = in.readString();
         this.translation = in.readString();
         this.notifyNextNum = in.readInt();
         this.notifyNextTime = in.readString();
         this.customOrder = in.readInt();
     }
+    //
 }

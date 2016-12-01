@@ -87,4 +87,11 @@
     <string name="sort_alphabetically">Alphabetically</string>
     <string name="search_hint">Search words</string>
     <string name="time_to_repeat_words_title">Time to repeat words</string>
+    <string name="check">Check</string>
+    <string name="fab_speed_dial_menu_item_word">Word</string>
+    <string name="fab_speed_dial_menu_item_words_group">Group of words</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="group_name">Group name</string>
+    <string name="language">Language</string>
 </resources>

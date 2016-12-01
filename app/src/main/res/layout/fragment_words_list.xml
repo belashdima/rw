@@ -7,12 +7,40 @@
     tools:context=".fragments.WordsListFragment"
     android:id="@+id/words_list_frame_layout">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/words_list_recycler_view"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/words_list_coordinator_layout"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/words_list_recycler_view"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp" />
+
+        <!--<android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabf"
+            android:background="@color/colorCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/ic_add_white_48dp"
+            app:layout_behavior="com.belashdima.rememberwords.behaviors.DisappearingFABBehavior"/>-->
+        <io.github.yavski.fabspeeddial.FabSpeedDial
+            android:id="@+id/fab_speed_dial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            app:fabGravity="bottom_end"
+            app:fabMenu="@menu/fab_speed_dial_menu"
+            app:miniFabBackgroundTint="@android:color/white"
+            app:miniFabDrawableTint="?attr/colorPrimaryDark"
+            app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
+    </android.support.design.widget.CoordinatorLayout>
+
 
 </FrameLayout>

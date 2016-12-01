@@ -1,6 +1,7 @@
 package com.belashdima.rememberwords.services;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -13,13 +14,14 @@ import android.os.Vibrator;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
-import com.belashdima.rememberwords.DatabaseOpenHelper;
+import com.belashdima.rememberwords.database.DatabaseOpenHelper;
 import com.belashdima.rememberwords.R;
 import com.belashdima.rememberwords.activities.RepeatWordsActivity;
 import com.belashdima.rememberwords.model.WordTranslation;
 import com.belashdima.rememberwords.receivers.WordRepeatWakefulReceiver;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class WordRepeatIntentService extends IntentService {
     public WordRepeatIntentService() {
@@ -36,10 +38,12 @@ public class WordRepeatIntentService extends IntentService {
             Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
             //v.vibrate(100);
             DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(this);
-            ArrayList<WordTranslation> notifiedWordsArrayList = databaseOpenHelper.getNotifiedWordsArrayList();
+            /*ArrayList<WordTranslation> notifiedWordsArrayList = databaseOpenHelper.getNotifiedWordsArrayList();
             databaseOpenHelper.close();
-            Log.i("WORDS", notifiedWordsArrayList.toString());
-            createNotification(notifiedWordsArrayList);
+            if(!notifiedWordsArrayList.isEmpty()) {
+                Log.i("CURRENT NOTIFICATION", new Date().toString());
+                createNotification(notifiedWordsArrayList);
+            }*/
 
             // Release the wake lock provided by the WakefulBroadcastReceiver.
             WordRepeatWakefulReceiver.completeWakefulIntent(intent);
@@ -74,10 +78,13 @@ public class WordRepeatIntentService extends IntentService {
         mBuilder.setLights(Color.BLUE, 1000, 500);
         mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.time_to_repeat_words_title)));
         mBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+        mBuilder.setOngoing(true);
+        Notification notification = mBuilder.build();
+        notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;    // Dont vibrate or make notification sound
+
         //mBuilder.setVibrate(new long[] { 500, 1000 });
 
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        mNotificationManager.notify(1, mBuilder.build());
+        mNotificationManager.notify(1, notification);
     }
 }

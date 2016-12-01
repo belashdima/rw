@@ -2,7 +2,7 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
+    <!--<item
         android:id="@+id/start_menu_action_search"
         android:icon="@drawable/ic_search_white_48dp"
         app:showAsAction="collapseActionView|always"
@@ -13,5 +13,5 @@
         android:title="@string/start_menu_action_sort"
         android:icon="@drawable/ic_sort_white_48dp"
         app:showAsAction="always"
-        android:onClick="onSortMenuItemClicked"/>
+        android:onClick="onSortMenuItemClicked"/>-->
 </menu>

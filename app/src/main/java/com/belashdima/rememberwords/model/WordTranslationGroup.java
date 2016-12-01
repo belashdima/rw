@@ -1,5 +1,8 @@
 package com.belashdima.rememberwords.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
@@ -10,8 +13,8 @@ public class WordTranslationGroup extends AbstractLearnableItem {
     private String language;
     private List<WordTranslation> wordTranslationList;
 
-    public WordTranslationGroup(int id, String name, String language, List<WordTranslation> wordTranslationList) {
-        this.id = id;
+    public WordTranslationGroup(int id, int listId, String name, String language, List<WordTranslation> wordTranslationList) {
+        super(id, listId);
         this.name = name;
         this.language = language;
         this.wordTranslationList = wordTranslationList;
@@ -51,4 +54,35 @@ public class WordTranslationGroup extends AbstractLearnableItem {
     public String getAuxiliaryInscription() {
         return getLanguage();
     }
+
+    // Parcelable implementation
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<WordTranslationGroup> CREATOR = new Parcelable.Creator<WordTranslationGroup>() {
+        public WordTranslationGroup createFromParcel(Parcel in) {
+            return new WordTranslationGroup(in);
+        }
+
+        public WordTranslationGroup[] newArray(int size) {
+            return new WordTranslationGroup[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(this.id);
+        out.writeInt(this.listId);
+        out.writeString(this.name);
+        out.writeString(this.language);
+    }
+
+    private WordTranslationGroup(Parcel in) {
+        super(in);
+        this.name = in.readString();
+        this.language = in.readString();
+    }
+    //
 }

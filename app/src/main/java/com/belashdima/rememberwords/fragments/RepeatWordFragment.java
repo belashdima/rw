@@ -1,31 +1,37 @@
 package com.belashdima.rememberwords.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.belashdima.rememberwords.database.DatabaseOpenHelper;
 import com.belashdima.rememberwords.R;
+import com.belashdima.rememberwords.activities.RepeatWordsActivity;
 import com.belashdima.rememberwords.model.WordTranslation;
-
-import java.util.ArrayList;
 
 public class RepeatWordFragment extends Fragment {
     //private OnFragmentInteractionListener mListener;
+    private WordTranslation wordTranslation;
 
     public RepeatWordFragment() {
         // Required empty public constructor
     }
 
-    public static RepeatWordFragment newInstance(String param1, String param2) {
+    public static RepeatWordFragment newInstance(WordTranslation wordTranslation) {
         RepeatWordFragment fragment = new RepeatWordFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("NOTIFIED_WORD", wordTranslation);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -33,6 +39,7 @@ public class RepeatWordFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            wordTranslation = getArguments().getParcelable("NOTIFIED_WORD");
         }
     }
 
@@ -40,23 +47,47 @@ public class RepeatWordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_repeat_word, container, false);
+        View view = inflater.inflate(R.layout.fragment_repeat_word, container, false);
+
+        TextView translationTextView = (TextView) view.findViewById(R.id.translation_text_view);
+        translationTextView.setText(wordTranslation.getTranslation());
+
+        Button checkButton = (Button) view.findViewById(R.id.check_button);
+        checkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCheckButtonClicked(wordTranslation, v);
+            }
+        });
+
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
 
-        ArrayList<WordTranslation> wordTranslationArrayList = getArguments().getParcelableArrayList("NOTIFIED_WORDS");
+    private void onCheckButtonClicked(WordTranslation wordTranslation, View v) {
+        EditText wordEditText = (EditText) this.getActivity().findViewById(R.id.word_edit_text);
+        String typedWord = wordEditText.getText().toString();
 
-        TextView textView = (TextView) getActivity().findViewById(R.id.rwtv);
+        DatabaseOpenHelper databaseOpenHelper = new DatabaseOpenHelper(getActivity());
 
-        String s = "";
-        for (WordTranslation wt : wordTranslationArrayList) {
-            s=s+wt.getWord()+"="+wt.getTranslation()+'\n';
+        if(wordTranslation.getWord().equals(typedWord)) {
+            v.setBackgroundColor(Color.GREEN);
+            ((Button) v).setText("Right!");
+
+            //databaseOpenHelper.setNextNotificationTime(wordTranslation);
+        } else {
+            v.setBackgroundColor(Color.RED);
+
+            //databaseOpenHelper.setNextNotificationTimeToFirst(wordTranslation);
         }
+        databaseOpenHelper.close();
 
-        textView.setText(s);
+        ViewPager viewPager = ((RepeatWordsActivity) getActivity()).getViewPager();
+        viewPager.setCurrentItem(viewPager.getCurrentItem()+1);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

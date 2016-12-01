@@ -14,8 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.StartActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH" />
@@ -45,8 +44,8 @@
         </activity>
 
         <provider
-            android:name=".WordsContentProvider"
-            android:authorities="com.belashdima.rememberwords.WordsContentProvider"
+            android:name=".database.WordsContentProvider"
+            android:authorities="com.belashdima.rememberwords.database.WordsContentProvider"
             android:enabled="true"
             android:exported="true" />
 

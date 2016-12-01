@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.StartActivity"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,8 +16,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:context=".activities.StartActivity">
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -31,7 +31,6 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </android.support.design.widget.AppBarLayout>
-
         <!--content start-->
         <RelativeLayout
             android:id="@+id/start_main_layout"
@@ -41,7 +40,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:context=".activities.StartActivity"
             android:background="@color/colorBack">
 
             <!--<TextView
@@ -51,13 +49,13 @@
                 android:text="Hello World!" />-->
         </RelativeLayout>
 
-        <android.support.design.widget.FloatingActionButton
+        <!--<android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_add_white_48dp" />
+            android:src="@drawable/ic_add_white_48dp" />-->
 
     </android.support.design.widget.CoordinatorLayout>
 
